@@ -5,9 +5,6 @@ const mysql = require('../mysql').pool
 
 
 router.get('/', (req, res, next) => {
-    // res.status(200).send({
-    //     message: 'Using the GET on users route'
-    // })
 
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
@@ -16,7 +13,6 @@ router.get('/', (req, res, next) => {
             (error, result, field) => {
                 if (error) { return res.status(500).send({ error: error }) }
                 return res.status(200).send({response: result})
-                conn.release()
             }
         )
     })
@@ -61,19 +57,17 @@ router.post('/', (req, res, next) => {
 })
 
 router.get('/:user_id', (req, res, next) => {
-    const id = req.params.user_id
-
-    if (id === 'special') {
-        res.status(200).send({
-            message: 'Special ID discovered',
-            id: id
-        })
-    } else {
-        res.status(200).send({
-            message: 'Usual ID discovered',
-            id: id
-        })
-    }
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(
+            'SELECT * FROM members WHERE id = ?;',
+            [req.params.user_id],
+            (error, result, field) => {
+                if (error) { return res.status(500).send({ error: error }) }
+                return res.status(200).send({response: result})
+            }
+        )
+    })
 })
 
 router.patch('/', (req, res, next) => {
