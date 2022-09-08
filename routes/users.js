@@ -8,8 +8,17 @@ router.get('/',(req,res,next) =>{
 })
 
 router.post('/',(req,res,next) =>{
+
+    const user = {
+        username: req.body.username,
+        password: req.body.password,
+        email: 'email',
+        verified: 1,
+        city: req.body.city,
+     }
     res.status(201).send({
-        message: 'Using the POST on users route'
+        message: 'Create a new user',
+        addedUser: user
     })
 })
 
