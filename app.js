@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const usersRoute = require('./routes/users')
 
 
-app.use(morgan('dev')) // show the request log
+app.use(morgan('dev')) // show the requests in log
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
