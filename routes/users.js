@@ -71,8 +71,40 @@ router.get('/:user_id', (req, res, next) => {
 })
 
 router.patch('/', (req, res, next) => {
-    res.status(201).send({
-        message: 'Using the PATCH on users route'
+    const user = {
+        username: req.body.username,
+        password: req.body.password,
+        email: 'email',
+        verified: 1,
+        cidade: req.body.city,
+        id: req.body.user_id
+    }
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(
+            `UPDATE members 
+            SET
+                username=?,
+                password=?,
+                cidade=?
+            WHERE id =?`,
+            [user.username, user.password, user.cidade, user.id],
+            (error, result, field) => {
+                conn.release()
+
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    })
+                }
+
+                res.status(201).send({
+                    message: 'User Modified:',
+                    modifiedUser: user
+                })
+            }
+        )
     })
 })
 
