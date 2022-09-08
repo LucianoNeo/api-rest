@@ -52,9 +52,6 @@ router.post('/', (req, res, next) => {
             (error, result, field) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
-                const response = {
-                    message: 'New User Created!'
-                }
                 res.status(201).send({
                     message: 'New User Created:',
                     id: result.insertId,
@@ -124,13 +121,7 @@ router.patch('/', (req, res, next) => {
             [user.username, user.password, user.cidade, user.id],
             (error, result, field) => {
                 conn.release()
-
-                if (error) {
-                    return res.status(500).send({
-                        error: error,
-                        response: null
-                    })
-                }
+                if (error) { return res.status(500).send({ error: error }) }
 
                 res.status(202).send({
                     message: 'User Modified:',
