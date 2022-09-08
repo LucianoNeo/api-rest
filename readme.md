@@ -1,5 +1,7 @@
 # API REST com conexão à banco MYSQL/MARIADB
 
+
+
 ### API REST criada com NODE JS + EXPRESS JS + NODEMON + MYSQL + BODYPARSER + MORGAN
 
 REST API criada para gerenciamento de usuários do neoscan.com.br
