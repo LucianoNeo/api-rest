@@ -23,7 +23,7 @@ Para utilizar a API clone o projeto e siga os passos a seguir:
 
 ```cp nodemon.example nodemon.json```
 
-E faça a atribuição dos valores do seu banco de dados.
+E faça a atribuição dos valores do seu banco de dados no arquivo nodemon.json.
 
 - Para rodar o servidor da API:
 
