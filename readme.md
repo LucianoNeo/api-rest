@@ -2,7 +2,7 @@
 
 
 
-### API REST criada com NODE JS + EXPRESS JS + NODEMON + MYSQL + BODYPARSER + MORGAN
+### API REST criada com NODE JS + EXPRESS JS + NODEMON + MYSQL + BODYPARSER + MORGAN + NODEPHP-PASSWORD
 
 REST API criada para gerenciamento de usuários do neoscan.com.br
 
@@ -29,5 +29,7 @@ E faça a atribuição dos valores do seu banco de dados.
 
 ```npm start```
 
+- Para acessar a api:
 
+http://localhost:3000/users
 

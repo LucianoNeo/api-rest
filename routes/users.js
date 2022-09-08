@@ -2,7 +2,7 @@ const express = require('express')
 const { pool } = require('../mysql')
 const router = express.Router()
 const mysql = require('../mysql').pool
-
+const Password = require('node-php-password');
 
 router.get('/', (req, res, next) => {
 
@@ -19,7 +19,8 @@ router.get('/', (req, res, next) => {
                         return {
                             id: user.id,
                             username: user.username,
-                            password: user.password,
+                            cidade: user.cidade,
+                            password: user.password ,
                             request: {
                                 type: 'GET',
                                 description: 'Return All Users',
@@ -38,10 +39,10 @@ router.post('/', (req, res, next) => {
 
     const user = {
         username: req.body.username,
-        password: req.body.password,
+        password: Password.hash(req.body.password),
         email: 'email',
         verified: 1,
-        cidade: req.body.city,
+        cidade: req.body.cidade,
     }
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
@@ -87,7 +88,7 @@ router.get('/:user_id', (req, res, next) => {
                             id: result[0].user_id,
                             username: result[0].username,
                             password: result[0].password,
-                            city: result[0].city,
+                            cidade: result[0].cidade,
                             request: {
                                 type: 'GET',
                                 description: 'Return a User',
