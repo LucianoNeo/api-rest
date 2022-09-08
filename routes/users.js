@@ -1,5 +1,8 @@
 const express = require('express')
+const { pool } = require('../mysql')
 const router = express.Router()
+const mysql = require('../mysql').pool
+
 
 router.get('/',(req,res,next) =>{
     res.status(200).send({
@@ -16,6 +19,13 @@ router.post('/',(req,res,next) =>{
         verified: 1,
         city: req.body.city,
      }
+mysql.getConnection((error, conn)=>{
+    conn.query(
+        'INSERT INTO users (username,password,email,verified,city) VALUES(?,?,?,?,?)',
+        [user.username,user.password,user.email,user.verified,user.city]
+    )
+})
+
     res.status(201).send({
         message: 'Create a new user',
         addedUser: user
