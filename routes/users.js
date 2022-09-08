@@ -12,12 +12,26 @@ router.get('/', (req, res, next) => {
             'SELECT * FROM members',
             (error, result, field) => {
                 if (error) { return res.status(500).send({ error: error }) }
-                return res.status(200).send({response: result})
+                
+                const response = {
+                    quantity: result.length,
+                    users: result.map(user => {
+                        return {
+                            id: user.id,
+                            username: user.username,
+                            password: user.password,
+                            request: {
+                                type: 'GET',
+                                description: 'Return All Users',
+                                url: `http://localhost:3000/users/${user.id}`,
+                            }
+                        }
+                    })
+                }
+                return res.status(200).send({response})
             }
         )
     })
-
-
 })
 
 router.post('/', (req, res, next) => {
@@ -36,14 +50,10 @@ router.post('/', (req, res, next) => {
             [user.username, user.password, user.email, user.verified, user.cidade],
             (error, result, field) => {
                 conn.release()
-
-                if (error) {
-                    return res.status(500).send({
-                        error: error,
-                        response: null
-                    })
+                if (error) { return res.status(500).send({ error: error }) }
+                const response = {
+                    message: 'New User Created!'
                 }
-
                 res.status(201).send({
                     message: 'New User Created:',
                     id: result.insertId,
@@ -64,7 +74,29 @@ router.get('/:user_id', (req, res, next) => {
             [req.params.user_id],
             (error, result, field) => {
                 if (error) { return res.status(500).send({ error: error }) }
-                return res.status(200).send({response: result})
+
+                if (result.length == 0){
+                    return res.status(404).send({
+                        message: 'ID Not found'
+                    })
+                }
+
+                const response = {
+                    
+                    user: {
+                            id: result[0].user_id,
+                            username: result[0].username,
+                            password: result[0].password,
+                            city: result[0].city,
+                            request: {
+                                type: 'GET',
+                                description: 'Return a User',
+                                url: `http://localhost:3000/users/`,
+                            }
+                        
+                    }
+                }
+                return res.status(200).send({response})
             }
         )
     })
@@ -99,7 +131,7 @@ router.patch('/', (req, res, next) => {
                     })
                 }
 
-                res.status(201).send({
+                res.status(202).send({
                     message: 'User Modified:',
                     modifiedUser: user
                 })
@@ -109,8 +141,24 @@ router.patch('/', (req, res, next) => {
 })
 
 router.delete('/', (req, res, next) => {
-    res.status(201).send({
-        message: 'Using the DELETE on users route'
+    const user = {
+        id: req.body.user_id
+    }
+
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(
+            'DELETE from members WHERE id=?', [user.id],
+            (error, result, field) => {
+                conn.release()
+                if (error) { return res.status(500).send({ error: error }) }
+
+                res.status(202).send({
+                    message: 'User Deleted:',
+                    deletedUser: user
+                })
+            }
+        )
     })
 })
 
