@@ -103,7 +103,7 @@ router.get('/:user_id', (req, res, next) => {
 router.patch('/', (req, res, next) => {
     const user = {
         username: req.body.username,
-        id: req.body.user_id
+        id: req.body.id
     }
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
@@ -111,7 +111,7 @@ router.patch('/', (req, res, next) => {
             `UPDATE members 
                 SET
                 username=?,
-                WHERE id =?`,
+                WHERE id=?`,
             [user.username, user.id],
             (error, result, field) => {
                 conn.release()
