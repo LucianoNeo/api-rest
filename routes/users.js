@@ -102,7 +102,7 @@ router.get('/:user_id', (req, res, next) => {
 
 router.patch('/', (req, res, next) => {
     const user = {
-        username: `${req.body.username}`,
+        username: req.body.username,
         id: req.body.user_id
     }
     mysql.getConnection((error, conn) => {
