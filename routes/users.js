@@ -114,11 +114,9 @@ router.patch('/', (req, res, next) => {
         conn.query(
             `UPDATE members 
             SET
-                username=?,
-                password=?,
-                cidade=?
+                username='?',
             WHERE id =?`,
-            [user.username, user.password, user.cidade, user.id],
+            [user.username, user.id],
             (error, result, field) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
