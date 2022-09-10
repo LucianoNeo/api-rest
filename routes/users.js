@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
             'SELECT * FROM members',
             (error, result, field) => {
                 if (error) { return res.status(500).send({ error: error }) }
-                
+
                 const response = {
                     quantity: result.length,
                     users: result.map(user => {
@@ -20,7 +20,7 @@ router.get('/', (req, res, next) => {
                             id: user.id,
                             username: user.username,
                             cidade: user.cidade,
-                            password: user.password ,
+                            password: user.password,
                             request: {
                                 type: 'GET',
                                 description: 'Return All Users',
@@ -29,7 +29,7 @@ router.get('/', (req, res, next) => {
                         }
                     })
                 }
-                return res.status(200).send({response})
+                return res.status(200).send({ response })
             }
         )
     })
@@ -73,28 +73,28 @@ router.get('/:user_id', (req, res, next) => {
             (error, result, field) => {
                 if (error) { return res.status(500).send({ error: error }) }
 
-                if (result.length == 0){
+                if (result.length == 0) {
                     return res.status(404).send({
                         message: 'ID Not found'
                     })
                 }
 
                 const response = {
-                    
+
                     user: {
-                            id: result[0].user_id,
-                            username: result[0].username,
-                            password: result[0].password,
-                            cidade: result[0].cidade,
-                            request: {
-                                type: 'GET',
-                                description: 'Return a User',
-                                url: `http://localhost:3000/users/`,
-                            }
-                        
+                        id: result[0].user_id,
+                        username: result[0].username,
+                        password: result[0].password,
+                        cidade: result[0].cidade,
+                        request: {
+                            type: 'GET',
+                            description: 'Return a User',
+                            url: `http://localhost:3000/users/`,
+                        }
+
                     }
                 }
-                return res.status(200).send({response})
+                return res.status(200).send({ response })
             }
         )
     })
@@ -102,20 +102,16 @@ router.get('/:user_id', (req, res, next) => {
 
 router.patch('/', (req, res, next) => {
     const user = {
-        username: req.body.username,
-        password: req.body.password,
-        email: 'email',
-        verified: 1,
-        cidade: req.body.city,
+        username: `${req.body.username}`,
         id: req.body.user_id
     }
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
             `UPDATE members 
-            SET
-                username='?',
-            WHERE id =?`,
+                SET
+                username=?,
+                WHERE id =?`,
             [user.username, user.id],
             (error, result, field) => {
                 conn.release()
