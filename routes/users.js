@@ -129,7 +129,7 @@ router.patch('/', (req, res, next) => {
 
 router.delete('/', (req, res, next) => {
     const user = {
-        id: req.body.user_id
+        id: req.body.id
     }
 
     mysql.getConnection((error, conn) => {
