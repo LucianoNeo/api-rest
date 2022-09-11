@@ -127,19 +127,19 @@ router.patch('/', (req, res, next) => {
     })
 })
 
-router.delete('/', (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
     
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
-            'DELETE from members WHERE id=?', [req.body.id],
+            'DELETE from members WHERE id=?', [req.params.id],
             (error, result, field) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
 
                 res.status(202).send({
                     message: 'User Deleted:',
-                    deletedUser: req.body.id
+                    deletedUser: req.params.id
                 })
             }
         )
