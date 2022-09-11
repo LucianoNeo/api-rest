@@ -112,7 +112,9 @@ router.patch('/', (req, res, next) => {
             [user.username, user.id],
             (error, result, field) => {
                 conn.release()
-                if (error) { return res.status(500).send({ error: error }) }
+                if (error) { return res.status(500).send({ error: error }) 
+                conn.release()
+            }
 
                 res.status(202).send({
                     message: 'User Modified:',
