@@ -128,21 +128,18 @@ router.patch('/', (req, res, next) => {
 })
 
 router.delete('/', (req, res, next) => {
-    const user = {
-        id: req.body.id
-    }
-
+    
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
-            'DELETE from members WHERE id=?', [user.id],
+            'DELETE from members WHERE id=?', [req.body.id],
             (error, result, field) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
 
                 res.status(202).send({
                     message: 'User Deleted:',
-                    deletedUser: user
+                    deletedUser: req.body.id
                 })
             }
         )
