@@ -4,7 +4,8 @@
   "description": "base rest api for mysql",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "node server.js"
   },
   "author": "LucianoNeo",
   "license": "ISC",
