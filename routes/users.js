@@ -11,6 +11,7 @@ router.get('/', (req, res, next) => {
         conn.query(
             'SELECT * FROM members',
             (error, result, field) => {
+                conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
 
                 const response = {
@@ -71,6 +72,7 @@ router.get('/:user_id', (req, res, next) => {
             'SELECT * FROM members WHERE id = ?;',
             [req.params.user_id],
             (error, result, field) => {
+                conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
 
                 if (result.length == 0) {
@@ -113,7 +115,7 @@ router.patch('/', (req, res, next) => {
             (error, result, field) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) 
-                conn.release()
+                
             }
 
                 res.status(202).send({
