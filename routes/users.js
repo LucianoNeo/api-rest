@@ -79,7 +79,7 @@ router.post('/', verifyJWT, (req, res, next) => {
 
 router.post('/login', (req, res) => {
     if (req.body.password === SECRET) {
-        const token = jwt.sign({ userName: 'Neo' }, SECRET, { expiresIn: 300 })
+        const token = jwt.sign({ userName: 'Neo' }, SECRET)
         return res.json({ auth: true, token });
     }
     res.status(401).end()
