@@ -2,7 +2,7 @@
 
 
 
-### API REST criada com NODE JS + EXPRESS JS + NODEMON + MYSQL + BODYPARSER + MORGAN + NODEPHP-PASSWORD
+### API REST criada com NODE JS + EXPRESS JS + NODEMON + MYSQL + BODYPARSER + MORGAN + NODEPHP-PASSWORD + JWT AUTHENTICATION
 
 REST API criada para gerenciamento de usuários do neoscan.com.br
 

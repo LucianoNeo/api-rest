@@ -1,11 +1,23 @@
 const express = require('express')
-const { pool } = require('../mysql')
 const router = express.Router()
-const mysql = require('../mysql').pool
+const mysql = require('../mysql').poolUsers
 const Password = require('node-php-password');
+const jwt = require('jsonwebtoken')
+const SECRET = process.env.PASSWORD
 
-router.get('/', (req, res, next) => {
 
+function verifyJWT(req, res, next) {
+    const token = req.headers['x-access-token'];
+    jwt.verify(token, SECRET, (error, decoded) => {
+        if (error) return res.status(401).send({ error: error })
+        req.userName = decoded.userName
+        next()
+    })
+}
+
+
+router.get('/', verifyJWT, (req, res, next) => {
+    console.log(req.userName + 'fez a chamada')
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
@@ -36,7 +48,7 @@ router.get('/', (req, res, next) => {
     })
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', verifyJWT, (req, res, next) => {
 
     const user = {
         username: req.body.username,
@@ -65,7 +77,20 @@ router.post('/', (req, res, next) => {
 
 })
 
-router.get('/:user_id', (req, res, next) => {
+router.post('/login', (req, res) => {
+    if (req.body.password === SECRET) {
+        const token = jwt.sign({ userName: 'Neo' }, SECRET, { expiresIn: 300 })
+        return res.json({ auth: true, token });
+    }
+    res.status(401).end()
+})
+
+router.post('/logout', (req, res) => {
+    res.end()
+})
+
+
+router.get('/:user_id', verifyJWT, (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
@@ -102,7 +127,7 @@ router.get('/:user_id', (req, res, next) => {
     })
 })
 
-router.patch('/', (req, res, next) => {
+router.patch('/', verifyJWT, (req, res, next) => {
     const user = {
         username: req.body.username,
         id: req.body.id
@@ -114,9 +139,10 @@ router.patch('/', (req, res, next) => {
             [user.username, user.id],
             (error, result, field) => {
                 conn.release()
-                if (error) { return res.status(500).send({ error: error }) 
-                
-            }
+                if (error) {
+                    return res.status(500).send({ error: error })
+
+                }
 
                 res.status(202).send({
                     message: 'User Modified:',
@@ -127,8 +153,8 @@ router.patch('/', (req, res, next) => {
     })
 })
 
-router.delete('/:id', (req, res, next) => {
-    
+router.delete('/:id', verifyJWT, (req, res, next) => {
+
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
