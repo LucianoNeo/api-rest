@@ -5,6 +5,7 @@
         "MYSQL_DB":"db_name",
         "MYSQL_HOST":"db_address",
         "MYSQL_PORT":3306,
-        "PASSWORD": "password"
+        "PASSWORD": "password",
+        "DISCORD": "bot token"
     }
 }

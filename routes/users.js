@@ -5,6 +5,44 @@ const Password = require('node-php-password');
 const jwt = require('jsonwebtoken')
 const SECRET = process.env.PASSWORD
 
+const { Client,GatewayIntentBits, Partials } = require('discord.js');
+const {Guilds,GuildMembers,DirectMessages,MessageContent} = GatewayIntentBits
+const {Channel,GuildMember,Message,User,Reaction} = Partials
+
+const client = new Client({
+  partials: [Message,Channel,GuildMember,User,Reaction],
+intents: [Guilds,GuildMembers,DirectMessages,MessageContent]
+});
+
+
+
+client.login(process.env.DISCORD);
+
+client.on('ready', async () => {
+    console.info('BOT DISCORD RODANDO!')   
+});
+
+client.on("messageCreate", async message => {
+    if (message.author.bot || message.guild) return;
+    const me = await client.users.fetch('237260277173846016');
+    me.send(` ${message.author} respondeu:  ${message.content}`)
+    return
+});
+
+
+router.post('/discord', async (req, res) => {
+    try {
+        const userID = req.body.discordId
+        const user = await client.users.fetch(userID);
+        const me = await client.users.fetch('237260277173846016');
+        user.send(`Olá **${user.username}** seu acesso do NeoScan vence hoje, poderá renovar? Caso sim envie o comprovante para o ${me}, obrigado!`);
+        res.status(200).send({'message':'Mensagem enviada com sucesso!'})
+    } catch (error) {
+        res.status(400).send(error)
+    }   
+})
+
+
 
 function verifyJWT(req, res, next) {
     const token = req.headers['x-access-token'];
@@ -25,7 +63,7 @@ router.get('/', verifyJWT, (req, res, next) => {
             (error, result, field) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
-
+                const noDate = new Date()
                 const response = {
                     quantity: result.length,
                     users: result.map(user => {
@@ -34,6 +72,10 @@ router.get('/', verifyJWT, (req, res, next) => {
                             username: user.username,
                             cidade: user.cidade,
                             password: user.password,
+                            vencimento: user.vencimento || noDate,
+                            discordId: user.discordId,
+                            discordName: user.discordName,
+                            valor: user.valor,
                             request: {
                                 type: 'GET',
                                 description: 'Return All Users',
@@ -85,6 +127,9 @@ router.post('/login', (req, res) => {
     res.status(401).end()
 })
 
+
+
+
 router.post('/logout', (req, res) => {
     res.end()
 })
@@ -105,14 +150,19 @@ router.get('/:user_id', verifyJWT, (req, res, next) => {
                         message: 'ID Not found'
                     })
                 }
+                const noDate = new Date()
 
                 const response = {
-
+                    
                     user: {
                         id: result[0].user_id,
                         username: result[0].username,
                         password: result[0].password,
                         cidade: result[0].cidade,
+                        vencimento: result[0].vencimento || noDate,
+                        discordId: result[0].discordId,
+                        discordName: result[0].discordName,
+                        valor: result[0].valor,
                         request: {
                             type: 'GET',
                             description: 'Return a User',
